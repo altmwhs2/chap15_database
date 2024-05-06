@@ -1,6 +1,10 @@
 package com.javalab.school.execution;
 
+import com.javalab.school.domain.Student;
+
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 학생 목록을 조회하는 프로그램
@@ -42,13 +46,23 @@ public class StudentSelect {
     }
 
     private static void displayStudents(Connection conn) {
+        // 학생 목록 저장용 ArrayList
+        List<Student> studentList = new ArrayList<Student>();
+
+        
         System.out.println("등록된 학생 목록:");
+        // 쿼리문 작성
         String sql = "SELECT s.student_id, s.name, s.year, s.address, s.department_id " +
                 "FROM student s " +
                 "ORDER BY s.student_id";
         try {
+            // PreparedStatment: 쿼리 실행을 위한 객체
+            // 커넥션 객체로 부터 얻어낸 PreparedStatment 객체를 이용해서 쿼리실행
             PreparedStatement pstmt = conn.prepareStatement(sql);
+            // 쿼리 실행 그리고 그 결과를 ResultSet 객체에 담는다.
             ResultSet rs = pstmt.executeQuery();
+
+            // while문을 이용해서 ResultSet 객체에 담긴 결과를 하나씩 꺼내서 출력
             while (rs.next()) {
                 String studentId = rs.getString("student_id");
                 String name = rs.getString("name");
@@ -57,6 +71,7 @@ public class StudentSelect {
                 int departmentId = rs.getInt("department_id");
                 System.out.println(studentId + "\t" + name + "\t" + year + "\t"
                         + address + "\t" + departmentId);
+                // ResultSet 에 있는 행들을 하나씩  학생 객체
             }
         } catch (SQLException e) {
             e.printStackTrace();
